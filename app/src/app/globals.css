@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+body {
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  background-color: #f9f5f0;
+  color: #333;
+}
