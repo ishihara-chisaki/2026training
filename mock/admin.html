@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者画面 - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 管理者ヘッダー */
+    header {
+      background: #1a1a2e;
+    }
+
+    .admin-badge {
+      background: #e8460a;
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    /* サマリーカード */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .summary-card .num {
+      font-size: 32px;
+      font-weight: 800;
+      color: #e8460a;
+    }
+
+    .summary-card .label {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .summary-card .sub {
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 2px;
+    }
+
+    /* 検索・フィルター */
+    .admin-toolbar {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      flex-wrap: wrap;
+    }
+
+    .admin-toolbar input {
+      flex: 1;
+      min-width: 200px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .admin-toolbar input:focus {
+      outline: none;
+      border-color: #e8460a;
+    }
+
+    .admin-toolbar select {
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background: white;
+      color: #333;
+    }
+
+    /* テーブル */
+    .admin-table-wrap {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .admin-table-wrap h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+      padding: 18px 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #f8f8f8;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f5f5f5;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: #fafafa;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #444;
+      vertical-align: middle;
+    }
+
+    .reviewer-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mini-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8460a, #f07030);
+      color: white;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .review-excerpt {
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #666;
+    }
+
+    .btn-delete {
+      background: #fff0eb;
+      color: #e8460a;
+      border: 1px solid #ffd0c0;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-delete:hover {
+      background: #e8460a;
+      color: white;
+      border-color: #e8460a;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .page-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .page-btn.active {
+      background: #e8460a;
+      border-color: #e8460a;
+      color: white;
+    }
+
+    /* モーダル風確認ダイアログ */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .modal .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="search.html" class="logo">MeshiLog <span class="admin-badge">ADMIN</span></a>
+    <nav>
+      <a href="search.html">一般画面に戻る</a>
+      <div class="avatar">管</div>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="page-title">管理者ダッシュボード</h1>
+
+    <!-- サマリー -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="num">48</div>
+        <div class="label">登録店舗数</div>
+        <div class="sub">今月 +3</div>
+      </div>
+      <div class="summary-card">
+        <div class="num">187</div>
+        <div class="label">総レビュー数</div>
+        <div class="sub">今月 +24</div>
+      </div>
+      <div class="summary-card">
+        <div class="num">89</div>
+        <div class="label">利用ユーザー数</div>
+        <div class="sub">今月アクティブ</div>
+      </div>
+      <div class="summary-card">
+        <div class="num">2</div>
+        <div class="label">要確認レビュー</div>
+        <div class="sub" style="color:#e8460a;">報告あり</div>
+      </div>
+    </div>
+
+    <!-- 検索バー -->
+    <div class="admin-toolbar">
+      <input type="text" placeholder="店名・投稿者名・コメント内容で検索...">
+      <select>
+        <option>すべてのステータス</option>
+        <option>通常</option>
+        <option>報告あり</option>
+      </select>
+      <select>
+        <option>すべての店舗</option>
+        <option>銀座 割烹 さくら</option>
+        <option>トラットリア ベッラ</option>
+        <option>虎ノ門 麺処 哲</option>
+      </select>
+      <button class="btn-primary" style="padding:8px 16px;">検索</button>
+    </div>
+
+    <!-- レビューテーブル -->
+    <div class="admin-table-wrap">
+      <h2>レビュー管理（187件）</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>投稿者</th>
+            <th>店舗名</th>
+            <th>評価</th>
+            <th>コメント（抜粋）</th>
+            <th>投稿日</th>
+            <th>ステータス</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="reviewer-cell">
+                <div class="mini-avatar">田</div>
+                田中 健一
+              </div>
+            </td>
+            <td>銀座 割烹 さくら</td>
+            <td><span class="stars-sm">★</span> 5.0</td>
+            <td><div class="review-excerpt">接待に最適です。個室が完備されており...</div></td>
+            <td>2026/03/25</td>
+            <td><span class="tag tag-gray">通常</span></td>
+            <td><button class="btn-delete">削除</button></td>
+          </tr>
+          <tr style="background:#fff8f5;">
+            <td>
+              <div class="reviewer-cell">
+                <div class="mini-avatar" style="background:#999;">匿</div>
+                匿名ユーザー
+              </div>
+            </td>
+            <td>焼肉 炎の王道</td>
+            <td><span class="stars-sm">★</span> 1.0</td>
+            <td><div class="review-excerpt" style="color:#e8460a;">（不適切なコンテンツが含まれる可能性）...</div></td>
+            <td>2026/03/22</td>
+            <td><span class="tag">要確認</span></td>
+            <td><button class="btn-delete">削除</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="reviewer-cell">
+                <div class="mini-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">佐</div>
+                佐藤 美咲
+              </div>
+            </td>
+            <td>銀座 割烹 さくら</td>
+            <td><span class="stars-sm">★</span> 4.0</td>
+            <td><div class="review-excerpt">ランチの定食がコスパ良く、量も多くて...</div></td>
+            <td>2026/03/18</td>
+            <td><span class="tag tag-gray">通常</span></td>
+            <td><button class="btn-delete">削除</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="reviewer-cell">
+                <div class="mini-avatar" style="background:linear-gradient(135deg,#10b981,#34d399);">鈴</div>
+                鈴木 大輔
+              </div>
+            </td>
+            <td>虎ノ門 麺処 哲</td>
+            <td><span class="stars-sm">★</span> 5.0</td>
+            <td><div class="review-excerpt">コスパ最高のラーメン屋です。チャーシューが...</div></td>
+            <td>2026/03/12</td>
+            <td><span class="tag tag-gray">通常</span></td>
+            <td><button class="btn-delete">削除</button></td>
+          </tr>
+          <tr style="background:#fff8f5;">
+            <td>
+              <div class="reviewer-cell">
+                <div class="mini-avatar" style="background:#999;">匿</div>
+                匿名ユーザー
+              </div>
+            </td>
+            <td>トラットリア ベッラ</td>
+            <td><span class="stars-sm">★</span> 1.0</td>
+            <td><div class="review-excerpt" style="color:#e8460a;">（不適切なコンテンツが含まれる可能性）...</div></td>
+            <td>2026/03/08</td>
+            <td><span class="tag">要確認</span></td>
+            <td><button class="btn-delete">削除</button></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="reviewer-cell">
+                <div class="mini-avatar">石</div>
+                石原 千祥
+              </div>
+            </td>
+            <td>トラットリア ベッラ</td>
+            <td><span class="stars-sm">★</span> 4.0</td>
+            <td><div class="review-excerpt">部署のランチ会で利用。大人数でも対応して...</div></td>
+            <td>2026/02/18</td>
+            <td><span class="tag tag-gray">通常</span></td>
+            <td><button class="btn-delete">削除</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ページネーション -->
+      <div class="pagination">
+        <button class="page-btn">←</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">…</button>
+        <button class="page-btn">19</button>
+        <button class="page-btn">→</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>飲食店を探す - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .search-hero {
+      background: linear-gradient(135deg, #e8460a, #f07030);
+      color: white;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .search-hero h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .search-bar {
+      display: flex;
+      max-width: 560px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .search-bar input {
+      flex: 1;
+      border: none;
+      padding: 14px 18px;
+      font-size: 15px;
+      color: #333;
+      outline: none;
+    }
+
+    .search-bar button {
+      background: #e8460a;
+      border: none;
+      color: white;
+      padding: 14px 20px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    /* フィルター */
+    .filter-bar {
+      background: white;
+      border-bottom: 1px solid #eee;
+      padding: 14px 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-bar label {
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .filter-bar select {
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #333;
+      background: white;
+      cursor: pointer;
+    }
+
+    .filter-bar select:focus {
+      outline: none;
+      border-color: #e8460a;
+    }
+
+    .view-toggle {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-toggle button {
+      border: 1.5px solid #ddd;
+      background: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .view-toggle button.active {
+      background: #e8460a;
+      border-color: #e8460a;
+      color: white;
+    }
+
+    /* 検索結果 */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .results-count {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* 店舗カード */
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .restaurant-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .restaurant-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .restaurant-card .img-placeholder {
+      height: 160px;
+      background: linear-gradient(135deg, #ffe0d0, #ffd0b0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+    }
+
+    .restaurant-card .favorite-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .restaurant-card .card-body {
+      padding: 16px;
+    }
+
+    .restaurant-card .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .restaurant-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+    }
+
+    .restaurant-card .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .restaurant-card .rating .score {
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .restaurant-card .meta {
+      font-size: 12px;
+      color: #888;
+      margin: 4px 0 10px;
+    }
+
+    .restaurant-card .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .restaurant-card .review-count {
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="search.html" class="logo">MeshiLog</a>
+    <nav>
+      <a href="favorites.html">♡ お気に入り</a>
+      <a href="mypage.html">マイページ</a>
+      <div class="avatar">石</div>
+    </nav>
+  </header>
+
+  <!-- 検索ヒーロー -->
+  <div class="search-hero">
+    <h1>今日のランチ・会食先を探そう</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="店名・エリア・駅名で検索...">
+      <button>🔍</button>
+    </div>
+  </div>
+
+  <!-- フィルターバー -->
+  <div class="filter-bar">
+    <label>絞り込み：</label>
+    <select>
+      <option>エリア・駅</option>
+      <option>新橋</option>
+      <option>銀座</option>
+      <option>虎ノ門</option>
+      <option>汐留</option>
+    </select>
+    <select>
+      <option>ジャンル</option>
+      <option>和食</option>
+      <option>洋食</option>
+      <option>中華</option>
+      <option>イタリアン</option>
+      <option>焼肉</option>
+      <option>寿司・海鮮</option>
+      <option>カフェ</option>
+    </select>
+    <select>
+      <option>用途</option>
+      <option>ランチ向き</option>
+      <option>会食向き</option>
+      <option>接待向き</option>
+      <option>大人数OK</option>
+    </select>
+    <select>
+      <option>評価順</option>
+      <option>評価が高い順</option>
+      <option>レビュー数順</option>
+      <option>新着順</option>
+    </select>
+    <div class="view-toggle">
+      <button class="active" onclick="window.location='search.html'">☰ 一覧</button>
+      <button onclick="window.location='map.html'">📍 地図</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="results-header">
+      <div class="results-count">48件の飲食店が見つかりました</div>
+      <a href="detail.html" style="font-size:13px;color:#e8460a;text-decoration:none;">+ 新しいお店を追加</a>
+    </div>
+
+    <div class="restaurant-grid">
+      <!-- カード1 -->
+      <a href="detail.html" class="restaurant-card">
+        <div class="img-placeholder">
+          🍱
+          <button class="favorite-btn" onclick="return false;">♡</button>
+        </div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>銀座 割烹 さくら</h3>
+            <div class="rating">
+              <span class="stars-sm">★</span>
+              <span class="score">4.3</span>
+            </div>
+          </div>
+          <div class="meta">和食 ・ 銀座駅 徒歩3分 ・ ¥2,000〜¥3,000</div>
+          <div class="tags">
+            <span class="tag">ランチ向き</span>
+            <span class="tag">接待向き</span>
+          </div>
+          <div class="review-count" style="margin-top:8px;">レビュー 12件</div>
+        </div>
+      </a>
+
+      <!-- カード2 -->
+      <a href="detail.html" class="restaurant-card">
+        <div class="img-placeholder">
+          🍝
+          <button class="favorite-btn" onclick="return false;" style="color:#e8460a;">♥</button>
+        </div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>トラットリア ベッラ</h3>
+            <div class="rating">
+              <span class="stars-sm">★</span>
+              <span class="score">4.1</span>
+            </div>
+          </div>
+          <div class="meta">イタリアン ・ 新橋駅 徒歩5分 ・ ¥1,500〜¥2,500</div>
+          <div class="tags">
+            <span class="tag">ランチ向き</span>
+            <span class="tag">大人数OK</span>
+          </div>
+          <div class="review-count" style="margin-top:8px;">レビュー 8件</div>
+        </div>
+      </a>
+
+      <!-- カード3 -->
+      <a href="detail.html" class="restaurant-card">
+        <div class="img-placeholder">
+          🍜
+          <button class="favorite-btn" onclick="return false;">♡</button>
+        </div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>虎ノ門 麺処 哲</h3>
+            <div class="rating">
+              <span class="stars-sm">★</span>
+              <span class="score">4.5</span>
+            </div>
+          </div>
+          <div class="meta">ラーメン ・ 虎ノ門駅 徒歩2分 ・ ¥800〜¥1,200</div>
+          <div class="tags">
+            <span class="tag">ランチ向き</span>
+          </div>
+          <div class="review-count" style="margin-top:8px;">レビュー 21件</div>
+        </div>
+      </a>
+
+      <!-- カード4 -->
+      <a href="detail.html" class="restaurant-card">
+        <div class="img-placeholder">
+          🥩
+          <button class="favorite-btn" onclick="return false;">♡</button>
+        </div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>焼肉 炎の王道</h3>
+            <div class="rating">
+              <span class="stars-sm">★</span>
+              <span class="score">4.0</span>
+            </div>
+          </div>
+          <div class="meta">焼肉 ・ 新橋駅 徒歩7分 ・ ¥4,000〜¥6,000</div>
+          <div class="tags">
+            <span class="tag">会食向き</span>
+            <span class="tag">大人数OK</span>
+          </div>
+          <div class="review-count" style="margin-top:8px;">レビュー 15件</div>
+        </div>
+      </a>
+
+      <!-- カード5 -->
+      <a href="detail.html" class="restaurant-card">
+        <div class="img-placeholder">
+          🍣
+          <button class="favorite-btn" onclick="return false;">♡</button>
+        </div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>鮨 一乃</h3>
+            <div class="rating">
+              <span class="stars-sm">★</span>
+              <span class="score">4.7</span>
+            </div>
+          </div>
+          <div class="meta">寿司 ・ 銀座駅 徒歩6分 ・ ¥8,000〜</div>
+          <div class="tags">
+            <span class="tag">接待向き</span>
+          </div>
+          <div class="review-count" style="margin-top:8px;">レビュー 6件</div>
+        </div>
+      </a>
+
+      <!-- カード6 -->
+      <a href="detail.html" class="restaurant-card">
+        <div class="img-placeholder">
+          ☕
+          <button class="favorite-btn" onclick="return false;">♡</button>
+        </div>
+        <div class="card-body">
+          <div class="card-header">
+            <h3>カフェ ソレイユ</h3>
+            <div class="rating">
+              <span class="stars-sm">★</span>
+              <span class="score">3.8</span>
+            </div>
+          </div>
+          <div class="meta">カフェ ・ 汐留駅 徒歩1分 ・ ¥800〜¥1,500</div>
+          <div class="tags">
+            <span class="tag">ランチ向き</span>
+          </div>
+          <div class="review-count" style="margin-top:8px;">レビュー 9件</div>
+        </div>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

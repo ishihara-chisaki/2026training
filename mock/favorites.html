@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お気に入り - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .fav-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .fav-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    .fav-card .img {
+      height: 140px;
+      background: linear-gradient(135deg, #ffe0d0, #ffc8a0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .fav-card .remove-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      color: #e8460a;
+    }
+
+    .fav-card .body {
+      padding: 14px;
+    }
+
+    .fav-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 4px;
+    }
+
+    .fav-card .meta {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .fav-card .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .fav-card .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .fav-date {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 8px;
+    }
+
+    /* 空状態 */
+    .empty-fav {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .empty-fav .icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+      color: #ddd;
+    }
+
+    .empty-fav h3 {
+      font-size: 18px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .empty-fav p {
+      font-size: 14px;
+      color: #bbb;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="search.html" class="logo">MeshiLog</a>
+    <nav>
+      <a href="favorites.html" style="font-weight:700;">♡ お気に入り</a>
+      <a href="mypage.html">マイページ</a>
+      <div class="avatar">石</div>
+    </nav>
+  </header>
+
+  <main>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <h1 class="page-title" style="margin:0;">お気に入り一覧</h1>
+      <span style="font-size:14px;color:#999;">4件</span>
+    </div>
+
+    <div class="favorites-grid">
+      <!-- カード1 -->
+      <a href="detail.html" class="fav-card">
+        <div class="img">🍱</div>
+        <button class="remove-btn" onclick="return false;" title="お気に入りを解除">♥</button>
+        <div class="body">
+          <h3>銀座 割烹 さくら</h3>
+          <div class="meta">和食 ・ 銀座駅 徒歩3分</div>
+          <div class="rating">
+            <span class="stars-sm">★</span>
+            <strong>4.3</strong>
+            <span style="color:#bbb;font-size:12px;">(12件)</span>
+          </div>
+          <div class="tags">
+            <span class="tag">接待向き</span>
+            <span class="tag">ランチ向き</span>
+          </div>
+          <div class="fav-date">追加日：2026年3月20日</div>
+        </div>
+      </a>
+
+      <!-- カード2 -->
+      <a href="detail.html" class="fav-card">
+        <div class="img" style="background:linear-gradient(135deg,#dde8ff,#c0d4ff);">🍝</div>
+        <button class="remove-btn" onclick="return false;" title="お気に入りを解除">♥</button>
+        <div class="body">
+          <h3>トラットリア ベッラ</h3>
+          <div class="meta">イタリアン ・ 新橋駅 徒歩5分</div>
+          <div class="rating">
+            <span class="stars-sm">★</span>
+            <strong>4.1</strong>
+            <span style="color:#bbb;font-size:12px;">(8件)</span>
+          </div>
+          <div class="tags">
+            <span class="tag">ランチ向き</span>
+            <span class="tag">大人数OK</span>
+          </div>
+          <div class="fav-date">追加日：2026年3月15日</div>
+        </div>
+      </a>
+
+      <!-- カード3 -->
+      <a href="detail.html" class="fav-card">
+        <div class="img" style="background:linear-gradient(135deg,#d4f5e8,#a8e8cc);">🍣</div>
+        <button class="remove-btn" onclick="return false;" title="お気に入りを解除">♥</button>
+        <div class="body">
+          <h3>鮨 一乃</h3>
+          <div class="meta">寿司 ・ 銀座駅 徒歩6分</div>
+          <div class="rating">
+            <span class="stars-sm">★</span>
+            <strong>4.7</strong>
+            <span style="color:#bbb;font-size:12px;">(6件)</span>
+          </div>
+          <div class="tags">
+            <span class="tag">接待向き</span>
+          </div>
+          <div class="fav-date">追加日：2026年3月5日</div>
+        </div>
+      </a>
+
+      <!-- カード4 -->
+      <a href="detail.html" class="fav-card">
+        <div class="img" style="background:linear-gradient(135deg,#ffe8d4,#ffd0a8);">☕</div>
+        <button class="remove-btn" onclick="return false;" title="お気に入りを解除">♥</button>
+        <div class="body">
+          <h3>カフェ ソレイユ</h3>
+          <div class="meta">カフェ ・ 汐留駅 徒歩1分</div>
+          <div class="rating">
+            <span class="stars-sm">★</span>
+            <strong>3.8</strong>
+            <span style="color:#bbb;font-size:12px;">(9件)</span>
+          </div>
+          <div class="tags">
+            <span class="tag">ランチ向き</span>
+          </div>
+          <div class="fav-date">追加日：2026年2月28日</div>
+        </div>
+      </a>
+    </div>
+  </main>
+</body>
+</html>

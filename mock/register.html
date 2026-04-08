@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新規登録 - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fff5f2 0%, #f9f5f0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 0;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 460px;
+      padding: 24px;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .login-logo .app-name {
+      font-size: 28px;
+      font-weight: 800;
+      color: #e8460a;
+    }
+
+    .register-card {
+      background: white;
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+
+    .register-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 24px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    .login-footer a {
+      color: #e8460a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="login-logo">
+      <div class="app-name">MeshiLog</div>
+    </div>
+
+    <div class="register-card">
+      <h2>新規アカウント登録</h2>
+
+      <div class="form-group">
+        <label for="name">氏名</label>
+        <input type="text" id="name" placeholder="石原 千祥">
+      </div>
+
+      <div class="form-group">
+        <label for="email">メールアドレス（社内メール）</label>
+        <input type="email" id="email" placeholder="your@company.co.jp">
+        <div class="hint">社内のメールアドレスを使用してください</div>
+      </div>
+
+      <div class="form-group">
+        <label for="department">部署</label>
+        <select id="department">
+          <option value="">選択してください</option>
+          <option value="sales">営業部</option>
+          <option value="dev">開発部</option>
+          <option value="hr">人事部</option>
+          <option value="finance">経理部</option>
+          <option value="marketing">マーケティング部</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password">パスワード</label>
+        <input type="password" id="password" placeholder="8文字以上">
+        <div class="hint">8文字以上、英数字を含めてください</div>
+      </div>
+
+      <div class="form-group">
+        <label for="password-confirm">パスワード（確認）</label>
+        <input type="password" id="password-confirm" placeholder="パスワードを再入力">
+      </div>
+
+      <a href="search.html" class="btn-primary">登録する</a>
+
+      <div class="login-footer">
+        すでにアカウントをお持ちの方は
+        <a href="login.html">ログイン</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>銀座 割烹 さくら - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ヒーローエリア */
+    .detail-hero {
+      background: linear-gradient(135deg, #ffe0d0, #ffc8a0);
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      position: relative;
+    }
+
+    .detail-hero .hero-actions {
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-btn.favorited {
+      color: #e8460a;
+    }
+
+    /* 詳細レイアウト */
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* 店舗ヘッダー */
+    .shop-header {
+      margin-bottom: 24px;
+    }
+
+    .shop-header .breadcrumb {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    .shop-header .breadcrumb a {
+      color: #e8460a;
+      text-decoration: none;
+    }
+
+    .shop-header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    .shop-header .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .big-rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .big-rating .score {
+      font-size: 28px;
+      font-weight: 800;
+      color: #333;
+    }
+
+    .big-rating .stars {
+      font-size: 22px;
+    }
+
+    /* 基本情報 */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+    }
+
+    .info-table tr {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-table td {
+      padding: 12px 4px;
+      font-size: 14px;
+    }
+
+    .info-table td:first-child {
+      width: 100px;
+      color: #888;
+      font-weight: 600;
+    }
+
+    .info-table td:last-child {
+      color: #333;
+    }
+
+    /* レビューセクション */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .review-card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+
+    .review-card .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .review-card .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8460a, #f07030);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .review-card .reviewer-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .review-card .reviewer-info .date {
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    .review-card .review-rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .review-card .review-text {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    .review-card .review-tags {
+      margin-top: 10px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* 右サイドバー */
+    .sidebar-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #222;
+    }
+
+    .mini-map {
+      width: 100%;
+      height: 160px;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 19px, #d9d1c5 19px, #d9d1c5 20px),
+        repeating-linear-gradient(90deg, transparent, transparent 19px, #d9d1c5 19px, #d9d1c5 20px),
+        #e8e0d4;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .mini-map .pin {
+      font-size: 28px;
+    }
+
+    .access-info {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .rating-breakdown {
+      margin-bottom: 4px;
+    }
+
+    .rating-row-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .rating-row-item .label {
+      width: 80px;
+      color: #666;
+    }
+
+    .rating-bar {
+      flex: 1;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .rating-bar-fill {
+      height: 100%;
+      background: #f5a623;
+      border-radius: 4px;
+    }
+
+    .rating-row-item .val {
+      width: 28px;
+      font-weight: 700;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="search.html" class="logo">MeshiLog</a>
+    <nav>
+      <a href="favorites.html">♡ お気に入り</a>
+      <a href="mypage.html">マイページ</a>
+      <div class="avatar">石</div>
+    </nav>
+  </header>
+
+  <!-- ヒーロー画像エリア -->
+  <div class="detail-hero">
+    🍱
+    <div class="hero-actions">
+      <button class="icon-btn favorited" title="お気に入り登録済み">♥</button>
+      <button class="icon-btn" title="共有">↗</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- パンくず -->
+    <div style="font-size:13px;color:#999;margin-bottom:16px;">
+      <a href="search.html" style="color:#e8460a;text-decoration:none;">検索</a> ＞
+      <a href="search.html" style="color:#e8460a;text-decoration:none;">和食</a> ＞
+      銀座 割烹 さくら
+    </div>
+
+    <div class="detail-layout">
+      <!-- 左メインコンテンツ -->
+      <div>
+        <div class="shop-header">
+          <h1>銀座 割烹 さくら</h1>
+          <div class="rating-row">
+            <div class="big-rating">
+              <span class="stars">★★★★☆</span>
+              <span class="score">4.3</span>
+            </div>
+            <span style="font-size:14px;color:#999;">レビュー 12件</span>
+            <span class="tag">ランチ向き</span>
+            <span class="tag">接待向き</span>
+          </div>
+        </div>
+
+        <!-- 基本情報 -->
+        <div class="card" style="padding:20px;margin-bottom:24px;">
+          <table class="info-table">
+            <tr>
+              <td>ジャンル</td>
+              <td>和食・割烹</td>
+            </tr>
+            <tr>
+              <td>住所</td>
+              <td>東京都中央区銀座5-1-XX</td>
+            </tr>
+            <tr>
+              <td>アクセス</td>
+              <td>銀座駅 A3出口 徒歩3分</td>
+            </tr>
+            <tr>
+              <td>営業時間</td>
+              <td>11:30〜14:00 / 17:30〜22:00</td>
+            </tr>
+            <tr>
+              <td>定休日</td>
+              <td>日曜日・祝日</td>
+            </tr>
+            <tr>
+              <td>予算</td>
+              <td>ランチ ¥2,000〜¥3,000 / ディナー ¥6,000〜¥10,000</td>
+            </tr>
+            <tr>
+              <td>予約</td>
+              <td>可（ランチは不要）</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- レビューセクション -->
+        <div class="section-title">
+          <span>社内レビュー（12件）</span>
+          <a href="review.html" class="btn-primary" style="font-size:13px;padding:8px 14px;">＋ レビューを書く</a>
+        </div>
+
+        <!-- レビューカード1 -->
+        <div class="review-card">
+          <div class="reviewer">
+            <div class="avatar">田</div>
+            <div class="reviewer-info">
+              <h4>田中 健一（営業部）</h4>
+              <div class="date">2026年3月25日</div>
+            </div>
+          </div>
+          <div class="review-rating">
+            <span class="stars-sm">★★★★★</span>
+            <strong>5.0</strong>
+          </div>
+          <div class="review-text">
+            取引先との会食に利用しました。個室が完備されており、接待にも最適です。料理の質が非常に高く、お刺身の鮮度が特に素晴らしかったです。スタッフの対応も丁寧で、また使いたいと思います。
+          </div>
+          <div class="review-tags">
+            <span class="tag">接待向き</span>
+            <span class="tag">個室あり</span>
+          </div>
+        </div>
+
+        <!-- レビューカード2 -->
+        <div class="review-card">
+          <div class="reviewer">
+            <div class="avatar" style="background:linear-gradient(135deg, #3b82f6, #60a5fa);">佐</div>
+            <div class="reviewer-info">
+              <h4>佐藤 美咲（マーケティング部）</h4>
+              <div class="date">2026年3月18日</div>
+            </div>
+          </div>
+          <div class="review-rating">
+            <span class="stars-sm">★★★★☆</span>
+            <strong>4.0</strong>
+          </div>
+          <div class="review-text">
+            ランチの定食がコスパ良く、量も多くて満足度高いです。昼はビジネスマンで混みますが、12時前に行けばスムーズに座れます。
+          </div>
+          <div class="review-tags">
+            <span class="tag">ランチ向き</span>
+          </div>
+        </div>
+
+        <!-- レビューカード3 -->
+        <div class="review-card">
+          <div class="reviewer">
+            <div class="avatar" style="background:linear-gradient(135deg, #10b981, #34d399);">鈴</div>
+            <div class="reviewer-info">
+              <h4>鈴木 大輔（開発部）</h4>
+              <div class="date">2026年3月10日</div>
+            </div>
+          </div>
+          <div class="review-rating">
+            <span class="stars-sm">★★★★☆</span>
+            <strong>4.0</strong>
+          </div>
+          <div class="review-text">
+            部署の歓迎会で利用。コースが充実していて、幹事としても注文しやすかったです。ただ、ランチは少し待ち時間があるので余裕を持って行くのがよいと思います。
+          </div>
+          <div class="review-tags">
+            <span class="tag">大人数OK</span>
+            <span class="tag">会食向き</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右サイドバー -->
+      <div>
+        <!-- アクションカード -->
+        <div class="sidebar-card">
+          <a href="review.html" class="btn-primary" style="width:100%;text-align:center;display:block;margin-bottom:10px;">＋ レビューを書く</a>
+          <button class="btn-secondary" style="width:100%;text-align:center;">♥ お気に入り済み</button>
+        </div>
+
+        <!-- 評価内訳 -->
+        <div class="sidebar-card">
+          <h3>評価の内訳</h3>
+          <div style="text-align:center;margin-bottom:16px;">
+            <div style="font-size:40px;font-weight:800;color:#333;">4.3</div>
+            <div class="stars" style="font-size:20px;">★★★★☆</div>
+            <div style="font-size:13px;color:#999;margin-top:4px;">12件のレビューより</div>
+          </div>
+          <div class="rating-row-item">
+            <div class="label">料理・味</div>
+            <div class="rating-bar"><div class="rating-bar-fill" style="width:90%;"></div></div>
+            <div class="val">4.5</div>
+          </div>
+          <div class="rating-row-item">
+            <div class="label">サービス</div>
+            <div class="rating-bar"><div class="rating-bar-fill" style="width:84%;"></div></div>
+            <div class="val">4.2</div>
+          </div>
+          <div class="rating-row-item">
+            <div class="label">コスパ</div>
+            <div class="rating-bar"><div class="rating-bar-fill" style="width:76%;"></div></div>
+            <div class="val">3.8</div>
+          </div>
+          <div class="rating-row-item">
+            <div class="label">雰囲気</div>
+            <div class="rating-bar"><div class="rating-bar-fill" style="width:88%;"></div></div>
+            <div class="val">4.4</div>
+          </div>
+        </div>
+
+        <!-- ミニマップ -->
+        <div class="sidebar-card">
+          <h3>アクセス</h3>
+          <div class="mini-map">
+            <div class="pin">📍</div>
+          </div>
+          <div class="access-info">
+            <strong>銀座 割烹 さくら</strong><br>
+            東京都中央区銀座5-1-XX<br>
+            銀座駅 A3出口 徒歩3分
+          </div>
+          <a href="map.html" style="font-size:13px;color:#e8460a;text-decoration:none;display:block;margin-top:10px;">地図で見る →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

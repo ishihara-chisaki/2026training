@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地図で探す - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { overflow: hidden; }
+
+    .map-layout {
+      display: flex;
+      height: calc(100vh - 56px);
+    }
+
+    /* 左サイドパネル */
+    .side-panel {
+      width: 340px;
+      min-width: 340px;
+      background: white;
+      border-right: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .side-panel .panel-search {
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .side-panel .panel-search input {
+      width: 100%;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .side-panel .panel-search input:focus {
+      border-color: #e8460a;
+    }
+
+    .filter-chips {
+      padding: 10px 16px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      border-bottom: 1px solid #eee;
+    }
+
+    .chip {
+      white-space: nowrap;
+      border: 1.5px solid #ddd;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      background: white;
+      color: #555;
+    }
+
+    .chip.active {
+      background: #e8460a;
+      border-color: #e8460a;
+      color: white;
+    }
+
+    .result-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .result-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+    }
+
+    .result-item:hover,
+    .result-item.active {
+      background: #fff5f2;
+    }
+
+    .result-item .item-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #ffe0d0, #ffd0b0);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .result-item .item-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 3px;
+    }
+
+    .result-item .item-info .meta {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .result-item .item-info .rating {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 4px;
+    }
+
+    .result-item .item-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e8460a;
+      min-width: 20px;
+    }
+
+    /* 地図エリア */
+    .map-area {
+      flex: 1;
+      background: #e8e0d4;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 地図の疑似表現 */
+    .fake-map {
+      width: 100%;
+      height: 100%;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 49px,
+          #d9d1c5 49px,
+          #d9d1c5 50px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 49px,
+          #d9d1c5 49px,
+          #d9d1c5 50px
+        ),
+        #e8e0d4;
+      position: relative;
+    }
+
+    /* 道路風の装飾 */
+    .road-h {
+      position: absolute;
+      height: 12px;
+      background: white;
+      left: 0;
+      right: 0;
+    }
+
+    .road-v {
+      position: absolute;
+      width: 12px;
+      background: white;
+      top: 0;
+      bottom: 0;
+    }
+
+    /* ピン */
+    .map-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .pin-bubble {
+      background: #e8460a;
+      color: white;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      position: relative;
+    }
+
+    .pin-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #e8460a;
+      border-bottom: none;
+    }
+
+    .pin-bubble.selected {
+      background: #222;
+    }
+
+    .pin-bubble.selected::after {
+      border-top-color: #222;
+    }
+
+    /* 店舗ポップアップ */
+    .map-popup {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      width: 280px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 20;
+    }
+
+    .map-popup h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .map-popup .meta {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .map-popup .popup-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-toggle {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .map-controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .map-control-btn {
+      width: 36px;
+      height: 36px;
+      background: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="search.html" class="logo">MeshiLog</a>
+    <nav>
+      <a href="favorites.html">♡ お気に入り</a>
+      <a href="mypage.html">マイページ</a>
+      <div class="avatar">石</div>
+    </nav>
+  </header>
+
+  <div class="map-layout">
+    <!-- 左サイドパネル -->
+    <div class="side-panel">
+      <div class="panel-search">
+        <input type="text" placeholder="エリア・店名で検索...">
+      </div>
+      <div class="filter-chips">
+        <button class="chip active">すべて</button>
+        <button class="chip">ランチ向き</button>
+        <button class="chip">会食向き</button>
+        <button class="chip">★4以上</button>
+        <button class="chip">和食</button>
+        <button class="chip">イタリアン</button>
+      </div>
+      <div style="padding:10px 16px;font-size:13px;color:#666;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+        <span>48件表示中</span>
+        <a href="search.html" style="color:#e8460a;text-decoration:none;font-size:12px;">☰ 一覧表示</a>
+      </div>
+      <div class="result-list">
+        <a href="detail.html" class="result-item active">
+          <div class="item-num">1</div>
+          <div class="item-icon">🍱</div>
+          <div class="item-info">
+            <h4>銀座 割烹 さくら</h4>
+            <div class="rating"><span class="stars-sm">★</span><strong>4.3</strong> <span style="color:#bbb;">(12)</span></div>
+            <div class="meta">和食 ・ 銀座駅 徒歩3分</div>
+          </div>
+        </a>
+        <a href="detail.html" class="result-item">
+          <div class="item-num">2</div>
+          <div class="item-icon">🍝</div>
+          <div class="item-info">
+            <h4>トラットリア ベッラ</h4>
+            <div class="rating"><span class="stars-sm">★</span><strong>4.1</strong> <span style="color:#bbb;">(8)</span></div>
+            <div class="meta">イタリアン ・ 新橋駅 徒歩5分</div>
+          </div>
+        </a>
+        <a href="detail.html" class="result-item">
+          <div class="item-num">3</div>
+          <div class="item-icon">🍜</div>
+          <div class="item-info">
+            <h4>虎ノ門 麺処 哲</h4>
+            <div class="rating"><span class="stars-sm">★</span><strong>4.5</strong> <span style="color:#bbb;">(21)</span></div>
+            <div class="meta">ラーメン ・ 虎ノ門駅 徒歩2分</div>
+          </div>
+        </a>
+        <a href="detail.html" class="result-item">
+          <div class="item-num">4</div>
+          <div class="item-icon">🥩</div>
+          <div class="item-info">
+            <h4>焼肉 炎の王道</h4>
+            <div class="rating"><span class="stars-sm">★</span><strong>4.0</strong> <span style="color:#bbb;">(15)</span></div>
+            <div class="meta">焼肉 ・ 新橋駅 徒歩7分</div>
+          </div>
+        </a>
+        <a href="detail.html" class="result-item">
+          <div class="item-num">5</div>
+          <div class="item-icon">🍣</div>
+          <div class="item-info">
+            <h4>鮨 一乃</h4>
+            <div class="rating"><span class="stars-sm">★</span><strong>4.7</strong> <span style="color:#bbb;">(6)</span></div>
+            <div class="meta">寿司 ・ 銀座駅 徒歩6分</div>
+          </div>
+        </a>
+        <a href="detail.html" class="result-item">
+          <div class="item-num">6</div>
+          <div class="item-icon">☕</div>
+          <div class="item-info">
+            <h4>カフェ ソレイユ</h4>
+            <div class="rating"><span class="stars-sm">★</span><strong>3.8</strong> <span style="color:#bbb;">(9)</span></div>
+            <div class="meta">カフェ ・ 汐留駅 徒歩1分</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 地図エリア -->
+    <div class="map-area">
+      <div class="fake-map">
+        <!-- 道路 -->
+        <div class="road-h" style="top: 30%;"></div>
+        <div class="road-h" style="top: 60%;"></div>
+        <div class="road-v" style="left: 25%;"></div>
+        <div class="road-v" style="left: 55%;"></div>
+        <div class="road-v" style="left: 75%;"></div>
+
+        <!-- マップピン -->
+        <div class="map-pin" style="left:40%;top:45%;">
+          <div class="pin-bubble selected">① 銀座 割烹 さくら</div>
+        </div>
+        <div class="map-pin" style="left:28%;top:55%;">
+          <div class="pin-bubble">② ベッラ</div>
+        </div>
+        <div class="map-pin" style="left:60%;top:35%;">
+          <div class="pin-bubble">③ 麺処 哲</div>
+        </div>
+        <div class="map-pin" style="left:30%;top:65%;">
+          <div class="pin-bubble">④ 炎の王道</div>
+        </div>
+        <div class="map-pin" style="left:50%;top:28%;">
+          <div class="pin-bubble">⑤ 鮨 一乃</div>
+        </div>
+        <div class="map-pin" style="left:70%;top:58%;">
+          <div class="pin-bubble">⑥ ソレイユ</div>
+        </div>
+
+        <!-- ズームコントロール -->
+        <div class="map-controls">
+          <button class="map-control-btn">＋</button>
+          <button class="map-control-btn">－</button>
+          <button class="map-control-btn">📍</button>
+        </div>
+
+        <!-- 選択店舗ポップアップ -->
+        <div class="map-popup">
+          <h3>銀座 割烹 さくら</h3>
+          <div class="rating" style="margin-bottom:4px;"><span class="stars-sm">★★★★☆</span> <strong>4.3</strong> <span style="color:#bbb;font-size:12px;">(12件)</span></div>
+          <div class="meta">和食 ・ 銀座駅 徒歩3分 ・ ¥2,000〜¥3,000</div>
+          <div class="popup-actions">
+            <a href="detail.html" class="btn-primary" style="flex:1;text-align:center;padding:8px;">詳細を見る</a>
+            <button class="btn-ghost" style="padding:8px 12px;">♡</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

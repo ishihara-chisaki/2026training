@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fff5f2 0%, #f9f5f0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-logo .app-name {
+      font-size: 32px;
+      font-weight: 800;
+      color: #e8460a;
+    }
+
+    .login-logo .app-tagline {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+
+    .login-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 24px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      margin-top: 4px;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    .login-footer a {
+      color: #e8460a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #bbb;
+      font-size: 12px;
+      margin: 20px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-top: 1px solid #eee;
+    }
+
+    .error-msg {
+      background: #fff0eb;
+      border: 1px solid #ffd0c0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #c93b08;
+      margin-bottom: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-logo">
+      <div class="app-name">MeshiLog</div>
+      <div class="app-tagline">社内飲食店共有プラットフォーム</div>
+    </div>
+
+    <div class="login-card">
+      <h2>ログイン</h2>
+
+      <!-- エラー時に表示 -->
+      <div class="error-msg">メールアドレスまたはパスワードが正しくありません。</div>
+
+      <div class="form-group">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" placeholder="your@company.co.jp" value="ishihara@company.co.jp">
+      </div>
+
+      <div class="form-group">
+        <label for="password">パスワード</label>
+        <input type="password" id="password" placeholder="パスワードを入力" value="••••••••">
+      </div>
+
+      <a href="search.html" class="btn-primary" style="text-align:center;">ログイン</a>
+
+      <div class="login-footer" style="margin-top: 16px;">
+        <a href="#">パスワードを忘れた方</a>
+      </div>
+
+      <div class="divider">または</div>
+
+      <div class="login-footer">
+        アカウントをお持ちでない方は
+        <a href="register.html">新規登録</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

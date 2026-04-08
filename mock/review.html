@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>レビューを書く - MeshiLog</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .review-form-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* 対象店舗バナー */
+    .shop-banner {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .shop-banner .icon {
+      font-size: 32px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #ffe0d0, #ffc8a0);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shop-banner .info h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+    }
+
+    .shop-banner .info p {
+      font-size: 13px;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    /* 星評価入力 */
+    .star-rating-group {
+      margin-bottom: 28px;
+    }
+
+    .star-rating-group .rating-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 12px;
+    }
+
+    .star-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      background: #fafafa;
+      border-radius: 10px;
+    }
+
+    .star-rating-row .label {
+      width: 80px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .star-input {
+      display: flex;
+      gap: 4px;
+    }
+
+    .star-input span {
+      font-size: 28px;
+      cursor: pointer;
+      color: #f5a623;
+      line-height: 1;
+    }
+
+    .star-input span.empty {
+      color: #ddd;
+    }
+
+    .star-rating-row .score-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+      min-width: 32px;
+    }
+
+    /* 用途タグ選択 */
+    .tag-select {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tag-checkbox {
+      display: none;
+    }
+
+    .tag-label {
+      display: inline-block;
+      border: 2px solid #ddd;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #666;
+      transition: all 0.2s;
+    }
+
+    .tag-checkbox:checked + .tag-label {
+      background: #e8460a;
+      border-color: #e8460a;
+      color: white;
+    }
+
+    /* 写真アップロード */
+    .photo-upload {
+      border: 2px dashed #ddd;
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+
+    .photo-upload:hover {
+      border-color: #e8460a;
+    }
+
+    .photo-upload .upload-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .photo-upload p {
+      font-size: 14px;
+      color: #888;
+    }
+
+    .photo-upload .sub {
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 4px;
+    }
+
+    /* アクションボタン */
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 32px;
+    }
+
+    .form-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .form-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .required {
+      color: #e8460a;
+      font-size: 11px;
+      margin-left: 4px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="search.html" class="logo">MeshiLog</a>
+    <nav>
+      <a href="favorites.html">♡ お気に入り</a>
+      <a href="mypage.html">マイページ</a>
+      <div class="avatar">石</div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="review-form-wrap">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <a href="detail.html" style="color:#e8460a;text-decoration:none;font-size:20px;">←</a>
+        <h1 class="page-title" style="margin:0;">レビューを投稿する</h1>
+      </div>
+
+      <!-- 対象店舗 -->
+      <div class="shop-banner">
+        <div class="icon">🍱</div>
+        <div class="info">
+          <h3>銀座 割烹 さくら</h3>
+          <p>和食 ・ 銀座駅 徒歩3分</p>
+        </div>
+      </div>
+
+      <!-- 評価入力 -->
+      <div class="form-section">
+        <h3>評価 <span class="required">必須</span></h3>
+        <div class="star-rating-row">
+          <div class="label">総合評価</div>
+          <div class="star-input">
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span class="empty">★</span>
+          </div>
+          <div class="score-label">4.0</div>
+        </div>
+        <div class="star-rating-row">
+          <div class="label">料理・味</div>
+          <div class="star-input">
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+          </div>
+          <div class="score-label">5.0</div>
+        </div>
+        <div class="star-rating-row">
+          <div class="label">サービス</div>
+          <div class="star-input">
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span class="empty">★</span>
+          </div>
+          <div class="score-label">4.0</div>
+        </div>
+        <div class="star-rating-row">
+          <div class="label">コスパ</div>
+          <div class="star-input">
+            <span>★</span>
+            <span>★</span>
+            <span>★</span>
+            <span class="empty">★</span>
+            <span class="empty">★</span>
+          </div>
+          <div class="score-label">3.0</div>
+        </div>
+      </div>
+
+      <!-- コメント -->
+      <div class="form-section">
+        <h3>コメント <span class="required">必須</span></h3>
+        <div class="form-group" style="margin:0;">
+          <textarea placeholder="店の雰囲気、料理、サービスなど社内の同僚に伝えたい情報を書いてください。&#10;（例：接待利用OK / ランチは混むので11:45頃がおすすめ など）" style="min-height:140px;">接待に使いました。個室があり落ち着いた雰囲気で好印象です。料理のレベルも高く、先方にも喜んでもらえました。</textarea>
+        </div>
+      </div>
+
+      <!-- 用途タグ -->
+      <div class="form-section">
+        <h3>用途タグ <span style="color:#999;font-size:12px;font-weight:normal;">（任意）</span></h3>
+        <div class="tag-select">
+          <input type="checkbox" id="tag1" class="tag-checkbox" checked>
+          <label for="tag1" class="tag-label">ランチ向き</label>
+
+          <input type="checkbox" id="tag2" class="tag-checkbox" checked>
+          <label for="tag2" class="tag-label">接待向き</label>
+
+          <input type="checkbox" id="tag3" class="tag-checkbox">
+          <label for="tag3" class="tag-label">会食向き</label>
+
+          <input type="checkbox" id="tag4" class="tag-checkbox">
+          <label for="tag4" class="tag-label">大人数OK</label>
+
+          <input type="checkbox" id="tag5" class="tag-checkbox">
+          <label for="tag5" class="tag-label">個室あり</label>
+
+          <input type="checkbox" id="tag6" class="tag-checkbox">
+          <label for="tag6" class="tag-label">テラスあり</label>
+
+          <input type="checkbox" id="tag7" class="tag-checkbox">
+          <label for="tag7" class="tag-label">コスパ良し</label>
+        </div>
+      </div>
+
+      <!-- 写真アップロード -->
+      <div class="form-section">
+        <h3>写真 <span style="color:#999;font-size:12px;font-weight:normal;">（任意・最大5枚）</span></h3>
+        <div class="photo-upload">
+          <div class="upload-icon">📷</div>
+          <p>クリックして写真を追加</p>
+          <div class="sub">JPG・PNG・HEIC対応 ／ 1枚あたり最大10MB</div>
+        </div>
+      </div>
+
+      <!-- ボタン -->
+      <div class="form-actions">
+        <a href="detail.html" class="btn-ghost">キャンセル</a>
+        <a href="detail.html" class="btn-primary">投稿する</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
