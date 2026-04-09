@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
-export const TEST_USER_ID = 'test-user-id'
+export const TEST_USER_ID = '04702adc-5a1e-4ac1-bfc6-13cc8bac7b78'
 
 export function isTestAuthMode(): boolean {
   if (typeof window === 'undefined') return false
