@@ -17,13 +17,6 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      // テスト用: ハードコード認証
-      if (email === 'ishihara.chisaki@comnic.co.jp' && password === '56295629') {
-        localStorage.setItem('__test_auth_mode', 'true')
-        router.push('/search')
-        return
-      }
-
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setError('メールアドレスまたはパスワードが正しくありません。')
