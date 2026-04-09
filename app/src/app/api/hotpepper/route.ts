@@ -76,6 +76,8 @@ export async function GET(request: NextRequest) {
     start: searchParams.get('start') ?? '1',
   })
 
+  const shopId = searchParams.get('id')
+  if (shopId) params.set('id', shopId)
   const keyword = searchParams.get('keyword')
   if (keyword) params.set('keyword', keyword)
   const lat = searchParams.get('lat')

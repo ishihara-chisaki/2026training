@@ -32,7 +32,7 @@ export default function ReviewPage() {
         setUserId(user.id)
       }
 
-      const res = await fetch(`/api/hotpepper?keyword=${id}&count=1`)
+      const res = await fetch(`/api/hotpepper?id=${id}&count=1`)
       if (res.ok) {
         const { restaurants: list } = await res.json()
         if (list.length > 0) setRestaurantName(list[0].name)

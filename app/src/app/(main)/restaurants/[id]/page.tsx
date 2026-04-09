@@ -31,7 +31,7 @@ export default function RestaurantDetailPage() {
       }
       setUserId(uid)
 
-      const res = await fetch(`/api/hotpepper?keyword=${id}&count=1`)
+      const res = await fetch(`/api/hotpepper?id=${id}&count=1`)
       if (res.ok) {
         const { restaurants: list } = await res.json()
         if (list.length > 0) setRestaurant(list[0])
