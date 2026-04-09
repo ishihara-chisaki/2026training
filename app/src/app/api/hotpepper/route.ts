@@ -87,15 +87,21 @@ export async function GET(request: NextRequest) {
   const genre = searchParams.get('genre')
   if (genre) params.set('genre', genre)
 
+  const apiUrl = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params.toString()}`
+
   try {
-    const res = await fetch(
-      `http://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params.toString()}`,
-      { next: { revalidate: 60 } }
-    )
+    const res = await fetch(apiUrl, { next: { revalidate: 60 } })
+
+    if (!res.ok) {
+      console.error(`HotPepper API error: ${res.status} ${res.statusText}`)
+      return NextResponse.json({ restaurants: [], total: 0, error: `upstream ${res.status}` })
+    }
+
     const data: HotpepperResponse = await res.json()
 
     if (data.results.error) {
-      return NextResponse.json({ restaurants: [], total: 0 })
+      console.error('HotPepper API returned error:', data.results.error)
+      return NextResponse.json({ restaurants: [], total: 0, error: data.results.error[0]?.message })
     }
 
     const shops = data.results.shop ?? []
@@ -120,7 +126,8 @@ export async function GET(request: NextRequest) {
       restaurants,
       total: data.results.results_available ?? restaurants.length,
     })
-  } catch {
-    return NextResponse.json({ restaurants: [], total: 0 })
+  } catch (err) {
+    console.error('HotPepper fetch failed:', err)
+    return NextResponse.json({ restaurants: [], total: 0, error: String(err) })
   }
 }
