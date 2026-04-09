@@ -1,6 +1,7 @@
 import type { Restaurant } from '@/types'
 
 export interface HotpepperSearchParams {
+  id?: string
   keyword?: string
   lat?: number
   lng?: number
@@ -12,6 +13,7 @@ export interface HotpepperSearchParams {
 
 export async function searchRestaurants(params: HotpepperSearchParams): Promise<{ restaurants: Restaurant[]; total: number }> {
   const searchParams = new URLSearchParams({
+    ...(params.id && { id: params.id }),
     keyword: params.keyword ?? '',
     ...(params.lat !== undefined && { lat: String(params.lat) }),
     ...(params.lng !== undefined && { lng: String(params.lng) }),

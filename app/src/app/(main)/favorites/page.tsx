@@ -40,7 +40,7 @@ export default function FavoritesPage() {
 
     const results = await Promise.all(
       favs.map(async (fav) => {
-        const { restaurants: list } = await searchRestaurants({ keyword: fav.restaurant_id, count: 1 })
+        const { restaurants: list } = await searchRestaurants({ id: fav.restaurant_id, count: 1 })
         const r = list[0]
         if (!r) return null
         const { data: reviews } = await supabase.from('reviews').select('rating').eq('restaurant_id', fav.restaurant_id)
