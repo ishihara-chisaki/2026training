@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { isTestAuthMode } from '@/hooks/useAuth'
 import { searchRestaurants } from '@/lib/hotpepper'
 import type { Restaurant } from '@/types'
 import StarRating from '@/components/ui/StarRating'
@@ -22,8 +23,10 @@ export default function MapPage() {
 
   useEffect(() => {
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/login'); return }
+      if (!isTestAuthMode()) {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { router.push('/login'); return }
+      }
       doSearch('新橋')
     }
     init()

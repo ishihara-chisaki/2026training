@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { isTestAuthMode, TEST_USER_ID } from '@/hooks/useAuth'
 import type { Profile, ReviewWithProfile } from '@/types'
 import StarRating from '@/components/ui/StarRating'
 
@@ -17,20 +18,26 @@ export default function MyPage() {
 
   useEffect(() => {
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/login'); return }
+      let uid: string
+      if (isTestAuthMode()) {
+        uid = TEST_USER_ID
+      } else {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { router.push('/login'); return }
+        uid = user.id
+      }
 
-      const { data: prof } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+      const { data: prof } = await supabase.from('profiles').select('*').eq('id', uid).single()
       if (prof) setProfile(prof)
 
       const { data: revs } = await supabase
         .from('reviews')
         .select('*, profiles(name, department)')
-        .eq('user_id', user.id)
+        .eq('user_id', uid)
         .order('created_at', { ascending: false })
       if (revs) setReviews(revs as ReviewWithProfile[])
 
-      const { count } = await supabase.from('favorites').select('*', { count: 'exact', head: true }).eq('user_id', user.id)
+      const { count } = await supabase.from('favorites').select('*', { count: 'exact', head: true }).eq('user_id', uid)
       setFavCount(count ?? 0)
       setLoading(false)
     }

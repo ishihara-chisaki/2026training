@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import { isTestAuthMode, TEST_USER_ID } from '@/hooks/useAuth'
 import StarRating from '@/components/ui/StarRating'
 import { PURPOSE_TAGS } from '@/types'
 
@@ -23,9 +24,13 @@ export default function ReviewPage() {
 
   useEffect(() => {
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/login'); return }
-      setUserId(user.id)
+      if (isTestAuthMode()) {
+        setUserId(TEST_USER_ID)
+      } else {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { router.push('/login'); return }
+        setUserId(user.id)
+      }
 
       const res = await fetch(`/api/hotpepper?keyword=${id}&count=1`)
       if (res.ok) {

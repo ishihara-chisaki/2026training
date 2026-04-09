@@ -30,8 +30,43 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const apiKey = process.env.HOTPEPPER_API_KEY
 
+  // テスト用: APIキーがない場合、ダミーデータを返す
   if (!apiKey) {
-    return NextResponse.json({ restaurants: [], total: 0 }, { status: 200 })
+    const dummyRestaurants: Restaurant[] = [
+      {
+        id: 'dummy-001',
+        name: 'テスト和食店',
+        genre: '和食',
+        address: '東京都千代田区丸の内',
+        access: '東京駅直結',
+        lat: 35.6654,
+        lng: 139.7707,
+        budget_lunch: '1000円',
+        budget_dinner: '3000円',
+        photo_url: '',
+        open: '11:30',
+        close: '22:00',
+        catch: 'テスト店舗です',
+        url: 'https://example.com',
+      },
+      {
+        id: 'dummy-002',
+        name: 'テスト洋食屋',
+        genre: '洋食',
+        address: '東京都千代田区丸の内',
+        access: '大手町駅徒歩3分',
+        lat: 35.6655,
+        lng: 139.7708,
+        budget_lunch: '1500円',
+        budget_dinner: '4000円',
+        photo_url: '',
+        open: '11:00',
+        close: '23:00',
+        catch: 'テスト店舗です',
+        url: 'https://example.com',
+      },
+    ]
+    return NextResponse.json({ restaurants: dummyRestaurants, total: 2 })
   }
 
   const params = new URLSearchParams({

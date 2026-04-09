@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { isTestAuthMode, TEST_USER_ID } from '@/hooks/useAuth'
 import type { Restaurant, ReviewWithProfile } from '@/types'
 import StarRating from '@/components/ui/StarRating'
 import ReviewCard from '@/components/review/ReviewCard'
@@ -20,9 +21,15 @@ export default function RestaurantDetailPage() {
 
   useEffect(() => {
     const init = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/login'); return }
-      setUserId(user.id)
+      let uid: string
+      if (isTestAuthMode()) {
+        uid = TEST_USER_ID
+      } else {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { router.push('/login'); return }
+        uid = user.id
+      }
+      setUserId(uid)
 
       const res = await fetch(`/api/hotpepper?keyword=${id}&count=1`)
       if (res.ok) {
@@ -40,7 +47,7 @@ export default function RestaurantDetailPage() {
       const { data: fav } = await supabase
         .from('favorites')
         .select('id')
-        .eq('user_id', user.id)
+        .eq('user_id', uid)
         .eq('restaurant_id', id)
         .maybeSingle()
       setIsFavorited(!!fav)

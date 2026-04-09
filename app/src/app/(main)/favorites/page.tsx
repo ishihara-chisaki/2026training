@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { isTestAuthMode, TEST_USER_ID } from '@/hooks/useAuth'
 import { searchRestaurants } from '@/lib/hotpepper'
 import type { Restaurant } from '@/types'
 import StarRating from '@/components/ui/StarRating'
@@ -20,13 +21,19 @@ export default function FavoritesPage() {
   const [loading, setLoading] = useState(true)
 
   const loadFavorites = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
+    let uid: string
+    if (isTestAuthMode()) {
+      uid = TEST_USER_ID
+    } else {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/login'); return }
+      uid = user.id
+    }
 
     const { data: favs } = await supabase
       .from('favorites')
       .select('restaurant_id, created_at')
-      .eq('user_id', user.id)
+      .eq('user_id', uid)
       .order('created_at', { ascending: false })
 
     if (!favs || favs.length === 0) { setLoading(false); return }
