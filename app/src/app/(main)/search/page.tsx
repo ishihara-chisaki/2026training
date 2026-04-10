@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { isTestAuthMode, TEST_USER_ID } from '@/hooks/useAuth'
 import { searchRestaurants } from '@/lib/hotpepper'
 import RestaurantCard from '@/components/restaurant/RestaurantCard'
 import type { Restaurant } from '@/types'
@@ -25,8 +26,8 @@ export default function SearchPage() {
   useEffect(() => {
     const init = async () => {
       // テスト用: ハードコード認証モード
-      if (typeof window !== 'undefined' && localStorage.getItem('__test_auth_mode') === 'true') {
-        setUserId('test-user-id')
+      if (isTestAuthMode()) {
+        setUserId(TEST_USER_ID)
         doSearch('')
         return
       }

@@ -35,11 +35,11 @@ export default function RestaurantCard({ restaurant, isFavorited = false, userId
     setLoading(true)
     try {
       if (favorited) {
-        await supabase.from('favorites').delete().match({ user_id: userId, restaurant_id: restaurant.id })
-        setFavorited(false)
+        const { error } = await supabase.from('favorites').delete().match({ user_id: userId, restaurant_id: restaurant.id })
+        if (!error) setFavorited(false)
       } else {
-        await supabase.from('favorites').insert({ user_id: userId, restaurant_id: restaurant.id })
-        setFavorited(true)
+        const { error } = await supabase.from('favorites').insert({ user_id: userId, restaurant_id: restaurant.id })
+        if (!error) setFavorited(true)
       }
     } finally {
       setLoading(false)
